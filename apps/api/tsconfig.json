@@ -4,8 +4,11 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "moduleResolution": "Node",
+    "moduleResolution": "node10",
+    // Silence deprecation about node10 moduleResolution in TS6 migration
+    "ignoreDeprecations": "6.0",
     "module": "CommonJS",
+
 
     // We don't need these for our final build
     "declarationMap": false,
