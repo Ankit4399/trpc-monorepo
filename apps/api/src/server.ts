@@ -20,7 +20,8 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
 if (env.NODE_ENV !== "prod") {
   app.use(
     cors({
-      origin: "*",
+      origin: ["http://localhost:3000", "http://localhost:8000", "http://localhost:8888"],
+      credentials: true,
     }),
   );
 }
@@ -31,9 +32,7 @@ app.get("/", (req, res) => {
   return res.json({ message: "Streamyst is up and running..." });
 });
 
-app.get("/health", (req, res) => {
-  return res.json({ message: "Streamyst server is healthy", healthy: true });
-});
+
 
 logger.debug(`openapi.json: ${env.BASE_URL}/openapi.json`);
 app.get("/openapi.json", (req, res) => {
