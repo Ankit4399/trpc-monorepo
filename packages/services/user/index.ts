@@ -3,7 +3,7 @@ import {usersTable} from'@repo/database/models/user'
 import {createHmac, randomBytes} from 'node:crypto'
 import * as JWT from 'jsonwebtoken'
 
-import { createUserWithEmailAndPasswordInput,CreateUserWithEmailAndPasswordInputType, generateUserTokenPayload, GenerateUserTokenPayloadType} from './model'
+import { createUserWithEmailAndPasswordInput,CreateUserWithEmailAndPasswordInputType, generateUserTokenPayload, GenerateUserTokenPayloadType, signInUserWithEmailAndPasswordInput, SignInUserWithEmailAndPasswordInputType} from './model'
 import { env } from '../env'
 
 export class UserService {
@@ -21,13 +21,17 @@ export class UserService {
         return {token}
     }
 
+    private async generatehash(password: string, salt: string){
+        return createHmac('sha256', salt).update(password).digest('hex');
+    }
+
     public async createUserWithEmailAndPassword(payload: CreateUserWithEmailAndPasswordInputType) {
         const {fullName,email,password} = await createUserWithEmailAndPasswordInput.parseAsync(payload)
         const existingUser = await this.getUserByEmail(email);
         if(existingUser) throw new Error('User with this email already exists');
 
         const salt = randomBytes(16).toString('hex');
-        const hash = createHmac('sha256', salt).update(password).digest('hex');
+        const hash = await this.generatehash(password, salt);
 
         const userInsertResult = await db.insert(usersTable).values({fullName,email,password:hash,salt}).returning({
             id: usersTable.id,
@@ -39,6 +43,25 @@ export class UserService {
         const {token} = await this.generateUserToken({id : userId})
         return{
             id: userId,
+            token
+        }
+    }
+
+    public async signInUserWithEmailAndPassword(payload : SignInUserWithEmailAndPasswordInputType){
+        const {email,password} = await signInUserWithEmailAndPasswordInput.parseAsync(payload);
+        const existingUser = await this.getUserByEmail(email);
+
+        if(!existingUser) throw new Error('Invalid email or password');
+
+        if(!existingUser.salt || !existingUser.password) throw new Error('Invalid user data');
+
+        const hash = await this.generatehash(password, existingUser.salt);
+
+        if(hash !== existingUser.password) throw new Error('Invalid email or password');
+
+        const {token} = await this.generateUserToken({id : existingUser.id})
+        return {
+            id : existingUser.id,
             token
         }
     }
