@@ -15,12 +15,15 @@ export class FormService {
             })
             .returning({
                 id: formsTable.id,
+                title: formsTable.title,
+                description: formsTable.description,
+                createdAt: formsTable.createdAt,
             })
 
         if (!formInsertResult || formInsertResult.length === 0 || !formInsertResult[0]?.id) {
             throw new Error('Failed to create form')
         }
 
-        return {id :formInsertResult[0].id}
+        return formInsertResult[0]
     }
 }
