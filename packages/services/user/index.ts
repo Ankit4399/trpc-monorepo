@@ -21,6 +21,25 @@ export class UserService {
         return {token}
     }
 
+    private async verifyUserToken(token: string): Promise<GenerateUserTokenPayloadType>{
+        try {
+            const verificationResult =  JWT.verify(token,env.JWT_SECRET) as GenerateUserTokenPayloadType
+            return verificationResult;
+        } catch (error) {
+            throw new Error('Invalid token');
+        }
+    }
+    private async getUserInfoById(id :string){
+        const user = await db.select({
+            id: usersTable.id,
+            fullName: usersTable.fullName,
+            email: usersTable.email,
+            profileImageUrl: usersTable.profileImageUrl,
+        }).from(usersTable).where(eq(usersTable.id,id));
+        if(user.length === 0 || !user) throw new Error(`User with id ${id} not found`);
+        return user[0];
+    }
+
     private async generatehash(password: string, salt: string){
         return createHmac('sha256', salt).update(password).digest('hex');
     }
@@ -64,5 +83,22 @@ export class UserService {
             id : existingUser.id,
             token
         }
+    }
+
+    public async verifyAndDecodeUserToken(token: string){
+        const {id} =  await this.verifyUserToken(token);
+        const userInfo = await this.getUserInfoById(id);
+        
+        // Ensure required fields are non-nullable
+        if (!userInfo?.id || !userInfo?.fullName || !userInfo?.email) {
+            throw new Error('Invalid user data');
+        }
+        
+        return {
+            id: userInfo.id,
+            fullName: userInfo.fullName,
+            email: userInfo.email,
+            profileImageUrl: userInfo.profileImageUrl
+        };
     }
 }
