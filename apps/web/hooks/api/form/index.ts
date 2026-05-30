@@ -157,3 +157,23 @@ export const useGetFields = (formId: string) => {
         status,
     }
 }
+
+export const useGetFormById = (formId: string) => {
+    const {
+        data: form,
+        error,
+        isFetched,
+        isFetching,
+        isLoading,
+        status,
+    } = trpc.form.getFormById.useQuery({ id: formId })
+
+    return {
+        form,
+        error,
+        isFetched,
+        isFetching,
+        isLoading,
+        status,
+    }
+}
