@@ -13,6 +13,7 @@ import {
 import { Input } from "~/components/ui/input"
 import { trpc } from "~/trpc/client"
 import { useSignup } from "~/hooks/api/auth"
+import { useRouter } from "next/navigation"
 
 export interface SignupFormInputs {
   name: string
@@ -25,6 +26,8 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+
+  const router = useRouter();
 
     const { createUserWithEmailAndPasswordAsync } = useSignup()
 
@@ -46,6 +49,7 @@ export function SignupForm({
 
    const {id} =  await createUserWithEmailAndPasswordAsync({fullName: data.name, email: data.email, password: data.password})
     console.log("Created user with id:", id)
+    router.replace('/dashboard')
   }
   return (
     <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)} {...props}>
