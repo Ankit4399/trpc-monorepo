@@ -29,7 +29,7 @@ export class UserService {
             throw new Error('Invalid token');
         }
     }
-    private async getUserInfoById(id :string){
+    public async getUserInfoById(id :string){
         const user = await db.select({
             id: usersTable.id,
             fullName: usersTable.fullName,
@@ -37,7 +37,7 @@ export class UserService {
             profileImageUrl: usersTable.profileImageUrl,
         }).from(usersTable).where(eq(usersTable.id,id));
         if(user.length === 0 || !user) throw new Error(`User with id ${id} not found`);
-        return user[0];
+        return user[0]!;
     }
 
     private async generatehash(password: string, salt: string){
@@ -87,18 +87,9 @@ export class UserService {
 
     public async verifyAndDecodeUserToken(token: string){
         const {id} =  await this.verifyUserToken(token);
-        const userInfo = await this.getUserInfoById(id);
-        
-        // Ensure required fields are non-nullable
-        if (!userInfo?.id || !userInfo?.fullName || !userInfo?.email) {
-            throw new Error('Invalid user data');
-        }
-        
+       
         return {
-            id: userInfo.id,
-            fullName: userInfo.fullName,
-            email: userInfo.email,
-            profileImageUrl: userInfo.profileImageUrl
+            id
         };
     }
 }
