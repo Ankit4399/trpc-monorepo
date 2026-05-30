@@ -29,6 +29,13 @@
       "when": 1780139929043,
       "tag": "0003_chemical_kang",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1780159908735,
+      "tag": "0004_unusual_radioactive_man",
+      "breakpoints": true
     }
   ]
 }
