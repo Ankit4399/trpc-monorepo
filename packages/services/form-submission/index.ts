@@ -1,6 +1,6 @@
-import { db } from '@repo/database'
+import { db, eq } from '@repo/database'
 import { formSubmissionsTable } from '@repo/database/models/form-submission'
-import { createFormSubmissionInput, CreateFormSubmissionInputType } from './model'
+import { createFormSubmissionInput, CreateFormSubmissionInputType, getFormSubmissionsInput, GetFormSubmissionsInputType } from './model'
 
 export class FormSubmissionService {
     public async createSubmission(payload: CreateFormSubmissionInputType) {
@@ -30,6 +30,29 @@ export class FormSubmissionService {
             values: result.values!,
             createdAt: result.createdAt,
         }
+    }
+
+    public async getFormSubmissions(payload: GetFormSubmissionsInputType) {
+        const { formId } = await getFormSubmissionsInput.parseAsync(payload)
+
+        const submissions = await db
+            .select({
+                id: formSubmissionsTable.id,
+                formId: formSubmissionsTable.formId,
+                values: formSubmissionsTable.values,
+                createdAt: formSubmissionsTable.createdAt,
+                updatedAt: formSubmissionsTable.updatedAt,
+            })
+            .from(formSubmissionsTable)
+            .where(eq(formSubmissionsTable.formId, formId))
+
+        return submissions.map(submission => ({
+            id: submission.id,
+            formId: submission.formId,
+            values: submission.values!,
+            createdAt: submission.createdAt,
+            updatedAt: submission.updatedAt,
+        }))
     }
 }
 

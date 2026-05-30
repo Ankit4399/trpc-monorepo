@@ -64,11 +64,18 @@ export function FormsList() {
                 {new Date(form.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right">
-                <Link href={`/dashboard/forms/${form.id}`}>
-                  <Button variant="outline" size="sm">
-                    Edit
-                  </Button>
-                </Link>
+                <div className="flex items-center justify-end gap-2">
+                  <Link href={`/dashboard/forms/${form.id}`}>
+                    <Button variant="outline" size="sm">
+                      Edit
+                    </Button>
+                  </Link>
+                  <Link href={`/dashboard/forms/${form.id}/submissions`}>
+                    <Button variant="default" size="sm">
+                      Submissions
+                    </Button>
+                  </Link>
+                </div>
               </TableCell>
             </TableRow>
           ))}

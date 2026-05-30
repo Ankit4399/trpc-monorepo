@@ -142,3 +142,17 @@ export const createFormSubmissionOutputModel = z.object({
     values: z.array(formSubmissionValueModel).describe('Submitted values'),
     createdAt: z.date().describe('Creation timestamp'),
 })
+
+export const getFormSubmissionsInputModel = z.object({
+    formId: z.string().uuid().describe('UUID of the form'),
+})
+
+export const getFormSubmissionsOutputModel = z.array(
+    z.object({
+        id: z.string().describe('Unique id of the submission'),
+        formId: z.string().describe('Form ID'),
+        values: z.array(formSubmissionValueModel).describe('Submitted values'),
+        createdAt: z.date().describe('Creation timestamp'),
+        updatedAt: z.date().describe('Last update timestamp'),
+    })
+)

@@ -11,3 +11,8 @@ export const createFormSubmissionInput = z.object({
     values: z.array(formSubmissionValueInput).describe('Array of field responses'),
 })
 export type CreateFormSubmissionInputType = z.infer<typeof createFormSubmissionInput>
+
+export const getFormSubmissionsInput = z.object({
+    formId: z.string().uuid().describe('UUID of the form'),
+})
+export type GetFormSubmissionsInputType = z.infer<typeof getFormSubmissionsInput>
