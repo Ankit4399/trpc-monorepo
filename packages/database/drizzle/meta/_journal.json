@@ -15,6 +15,20 @@
       "when": 1779970329506,
       "tag": "0001_cynical_amphibian",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780138890954,
+      "tag": "0002_demonic_darwin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1780139929043,
+      "tag": "0003_chemical_kang",
+      "breakpoints": true
     }
   ]
 }
