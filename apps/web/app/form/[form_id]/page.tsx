@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useGetFormById } from "~/hooks/api/form"
+import { useGetFormById, useSubmitForm } from "~/hooks/api/form"
 import {
   Form,
   FormControl,
@@ -35,6 +35,7 @@ export default function PublicFormPage() {
   const [submitted, setSubmitted] = useState(false)
 
   const { form: formData, isLoading, error } = useGetFormById(formId)
+  const { submitFormAsync } = useSubmitForm()
 
   // Build dynamic schema based on form fields
   const buildSchema = () => {
@@ -88,13 +89,29 @@ export default function PublicFormPage() {
   })
 
   const onSubmit = async (values: Record<string, any>) => {
-    // TODO: Send form submission to backend
-    console.log("Form submitted:", values)
-    setSubmitted(true)
-    setTimeout(() => {
-      form.reset()
-      setSubmitted(false)
-    }, 3000)
+    try {
+      // Transform form values to match submission format
+      const submissionValues = Object.entries(values).map(([key, value]) => {
+        const field = formData?.fields.find(f => f.labelKey === key)
+        return {
+          formFieldId: field?.id || key,
+          value: String(value),
+        }
+      })
+
+      await submitFormAsync({
+        formId,
+        values: submissionValues,
+      })
+
+      setSubmitted(true)
+      setTimeout(() => {
+        form.reset()
+        setSubmitted(false)
+      }, 3000)
+    } catch (err) {
+      console.error("Failed to submit form:", err)
+    }
   }
 
   if (isLoading) {
