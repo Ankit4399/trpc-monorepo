@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+// Form Fields Models - Enum
+const fieldTypeEnum = z.enum(['text', 'number', 'email', 'yes_no', 'password'])
+
 export const createFormInputModel = z.object({
     title: z.string().min(1).describe('Title of the form'),
     description: z.string().optional().describe('Description of the form'),
@@ -21,8 +24,32 @@ export const listFormsOutputModel = z.array(
     })
 )
 
-// Form Fields Models
-const fieldTypeEnum = z.enum(['text', 'number', 'email', 'yes_no', 'password'])
+export const getFormByIdInputModel = z.object({
+    id: z.string().uuid().describe('UUID of the form'),
+})
+
+export const getFormByIdOutputModel = z.object({
+    id: z.string().describe('Unique id of the form'),
+    title: z.string().describe('Title of the form'),
+    description: z.string().nullable().optional().describe('Description of the form'),
+    createdAt: z.date().describe('Creation timestamp'),
+    updatedAt: z.date().describe('Last update timestamp'),
+    fields: z.array(
+        z.object({
+            id: z.string().describe('Unique id of the field'),
+            formId: z.string().describe('Form ID'),
+            label: z.string().describe('Display name'),
+            labelKey: z.string().describe('Slug identifier'),
+            type: fieldTypeEnum.describe('Field type'),
+            placeholder: z.string().nullable().optional().describe('Placeholder text'),
+            description: z.string().nullable().optional().describe('Description'),
+            isRequired: z.boolean().describe('Is required'),
+            index: z.string().describe('Field index'),
+            createdAt: z.date().describe('Creation timestamp'),
+            updatedAt: z.date().describe('Last update timestamp'),
+        })
+    ).describe('Array of form fields'),
+})
 
 export const createFieldInputModel = z.object({
     formId: z.string().uuid().describe('UUID of the form'),
