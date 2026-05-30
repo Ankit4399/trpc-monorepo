@@ -1,7 +1,21 @@
 import { formService } from "../../services";
+import { formFieldService } from "../../services";
 import { authenticatedProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
-import { createFormInputModel, createFormOutputModel, listFormsInputModel, listFormsOutputModel } from "./model";
+import { 
+    createFormInputModel, 
+    createFormOutputModel, 
+    listFormsInputModel, 
+    listFormsOutputModel,
+    createFieldInputModel,
+    createFieldOutputModel,
+    updateFieldInputModel,
+    updateFieldOutputModel,
+    deleteFieldInputModel,
+    deleteFieldOutputModel,
+    getFieldsInputModel,
+    getFieldsOutputModel,
+} from "./model";
 
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
@@ -38,5 +52,49 @@ export const formRouter = router({
         })
 
         return forms
+    }),
+
+    createField: authenticatedProcedure.meta({openapi :{
+        method: "POST",
+        path: getPath("/createField"),
+        tags: TAGS,
+        protect : true,
+    }}).input(createFieldInputModel).output(createFieldOutputModel)
+    .mutation(async ({input})=>{
+        const field = await formFieldService.createField(input)
+        return field
+    }),
+
+    updateField: authenticatedProcedure.meta({openapi :{
+        method: "PUT",
+        path: getPath("/updateField"),
+        tags: TAGS,
+        protect : true,
+    }}).input(updateFieldInputModel).output(updateFieldOutputModel)
+    .mutation(async ({input})=>{
+        const field = await formFieldService.updateField(input)
+        return field
+    }),
+
+    deleteField: authenticatedProcedure.meta({openapi :{
+        method: "DELETE",
+        path: getPath("/deleteField"),
+        tags: TAGS,
+        protect : true,
+    }}).input(deleteFieldInputModel).output(deleteFieldOutputModel)
+    .mutation(async ({input})=>{
+        const result = await formFieldService.deleteField(input)
+        return result
+    }),
+
+    getFields: authenticatedProcedure.meta({openapi :{
+        method: "GET",
+        path: getPath("/getFields"),
+        tags: TAGS,
+        protect : true,
+    }}).input(getFieldsInputModel).output(getFieldsOutputModel)
+    .query(async ({input})=>{
+        const fields = await formFieldService.getFields(input)
+        return fields
     }),
 })

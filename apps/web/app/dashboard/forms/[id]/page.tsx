@@ -4,6 +4,7 @@ import { useParams } from "next/navigation"
 import Link from "next/link"
 import { AppSidebar } from "~/components/app-sidebar"
 import { SiteHeader } from "~/components/site-header"
+import { FormBuilder } from "~/components/form-builder"
 import {
   SidebarInset,
   SidebarProvider,
@@ -40,18 +41,14 @@ export default function FormEditPage() {
                   <div>
                     <h1 className="text-3xl font-bold tracking-tight">Edit Form</h1>
                     <p className="text-muted-foreground">
-                      Form ID: {formId}
+                      Manage form fields and settings
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="px-4 lg:px-6">
-                <div className="rounded-md border p-6">
-                  <p className="text-muted-foreground">
-                    Form builder coming soon...
-                  </p>
-                </div>
+                <FormBuilder formId={formId} />
               </div>
             </div>
           </div>
