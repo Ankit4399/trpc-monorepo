@@ -1,5 +1,6 @@
 import { AppSidebar } from "~/components/app-sidebar"
 import { SiteHeader } from "~/components/site-header"
+import { CreateFormModal } from "~/components/create-form-modal"
 import {
   SidebarInset,
   SidebarProvider,
@@ -30,10 +31,15 @@ export default function FormsPage() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <div className="px-4 lg:px-6">
                 <div className="flex flex-col gap-2">
-                  <h1 className="text-3xl font-bold tracking-tight">Forms</h1>
-                  <p className="text-muted-foreground">
-                    Manage and view your forms here
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-3xl font-bold tracking-tight">Forms</h1>
+                      <p className="text-muted-foreground">
+                        Manage and view your forms here
+                      </p>
+                    </div>
+                    <CreateFormModal />
+                  </div>
                 </div>
               </div>
 
